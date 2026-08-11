@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+.pnpm-store/
 /.pnp
 .pnp.*
 .yarn/*
@@ -16,12 +17,14 @@
 # next.js
 /.next/
 /out/
+/dist/
 
 # production
 /build
 
 # misc
 .DS_Store
+Thumbs.db
 *.pem
 
 # debug
@@ -39,3 +42,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Temporales
+*.tmp
+*.temp
+.cache/
+
+# Base de datos local
+*.db
+*.sqlite
+*.sqlite3
