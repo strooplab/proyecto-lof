@@ -1,13 +1,15 @@
 // auth.ts
 // import "server-only";
 import { Pool } from "pg";
+import dotenv from "dotenv";
 
+dotenv.config();
 // Configuración de conexión
 const databaseConfig = {
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
+  password: process.env.DB_PASSWORD || "5432",
   port: process.env.DB_PORT,
   ssl:
     process.env.NODE_ENV === "production"
@@ -22,8 +24,8 @@ if (process.env.NODE_ENV === "production") {
     user: databaseConfig.user,
     host: databaseConfig.host,
     database: databaseConfig.database,
-    password: databaseConfig.password,
-    port: parseInt(databaseConfig.port || ""),
+    password: databaseConfig.password || "",
+    port: parseInt(databaseConfig.port || "5432"),
     ssl: databaseConfig.ssl,
     max: 20, // En producción este será el número máximo de clients
     idleTimeoutMillis: 30000,
@@ -39,8 +41,8 @@ if (process.env.NODE_ENV === "production") {
       user: databaseConfig.user,
       host: databaseConfig.host,
       database: databaseConfig.database,
-      password: databaseConfig.password,
-      port: parseInt(databaseConfig.port || ""),
+      password: databaseConfig.password || "",
+      port: parseInt(databaseConfig.port || "5432"),
       ssl: databaseConfig.ssl,
       max: 5,
       idleTimeoutMillis: 30000,
