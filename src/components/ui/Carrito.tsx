@@ -1,0 +1,194 @@
+"use client";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+  Button,
+} from "@headlessui/react";
+import Image from "next/image";
+import { usePanel } from "@/components/context/PanelContext";
+
+// TEMPORAL: Contenido de ejemplo
+const productos = [
+  {
+    id: 1,
+    name: "Blusa manga semicorta",
+    href: "#",
+    color: "Salmon",
+    talla: "xs",
+    price: "$90.000",
+    quantity: 1,
+    imageSrc:
+      "https://images.pexels.com/photos/9558584/pexels-photo-9558584.jpeg",
+    imageAlt: "Blusa color salmón de manga semicorta.",
+  },
+  {
+    id: 2,
+    name: "Jean Gruesos Bota Ancha",
+    href: "#",
+    color: "Azul Oscuro",
+    talla: "34",
+    price: "$120.000",
+    quantity: 1,
+    imageSrc:
+      "https://images.pexels.com/photos/10133281/pexels-photo-10133281.jpeg",
+    imageAlt: "Jeans Azul Oscuros Talla 34.",
+  },
+  {
+    id: 3,
+    name: "Candongas de rodio circonado",
+    href: "#",
+    color: "Dorado",
+    talla: "N/A",
+    price: "$28.000",
+    quantity: 1,
+    imageSrc:
+      "https://images.pexels.com/photos/15491634/pexels-photo-15491634.jpeg",
+    imageAlt: "Candongas de rodio circonado.",
+  },
+];
+
+export default function Carrito() {
+  const { activeDrawer, closeDrawer } = usePanel();
+  const isOpen = activeDrawer === "Carrito";
+  return (
+    <Dialog open={isOpen} onClose={closeDrawer} className="relative z-50">
+      <DialogBackdrop
+        transition
+        className="fixed inset-0 bg-black/50 transition-opacity duration-300 ease-in-out
+        data-closed:opacity-0"
+      />
+
+      {/* Panel */}
+      <div className="fixed inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+            <DialogPanel
+              transition
+              className="pointer-events-auto w-screen max-w-md 
+              transform transition duration-300 ease-in-out
+              data-closed:translate-x-full sm:duration-500"
+            >
+              <div className="flex h-full flex-col overflow-y-auto bg-cream shadow-xl shadow-blue-gray-900/5">
+                <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+                  <div className="flex items-start justify-between">
+                    <DialogTitle className="text-heading-lg font-sans font-medium text-espresso">
+                      Tu carrito
+                    </DialogTitle>
+                    <div className="ml-3 flex h-7 items-center">
+                      <Button
+                        as="button"
+                        onClick={closeDrawer}
+                        aria-label="Cerrar carrito"
+                        aria-expanded={activeDrawer === "Carrito"}
+                        className="relative -m-2 p-2 text-espresso/80 hover:text-espresso"
+                      >
+                        <span className="absolute -inset-0.5" />
+                        <span className="material-symbols-outlined text-2xl leading-none">
+                          close
+                        </span>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <div className="flow-root">
+                      <ul
+                        role="list"
+                        className="-my-6 divide-y divide-espresso/10"
+                      >
+                        {productos.map((producto) => {
+                          return (
+                            <li key={producto.id} className="flex py-6">
+                              <div className="size-24 shrink-0 overflow-hidden rounded-md border border-espresso/10">
+                                <Image
+                                  src={producto.imageSrc}
+                                  alt={producto.imageAlt}
+                                  width={360}
+                                  height={360}
+                                  className="size-full object-cover"
+                                />
+                              </div>
+                              <div className="ml-4 flex flex-1 flex-col">
+                                <div>
+                                  <div className="flex justify-between text-body-lg font-sans font-medium text-espresso">
+                                    <h3>
+                                      <a href={producto.href}>
+                                        {producto.name}
+                                      </a>
+                                    </h3>
+                                    <p className="ml-4">{producto.price}</p>
+                                  </div>
+                                  <p className="mt-1 text-body-sm text-espresso/80">
+                                    {producto.color}
+                                  </p>
+                                </div>
+                                <div className="flex flex-1 items-end justify-between text-body-sm">
+                                  <div className="flex flex-col mt-3">
+                                    <p className="text-espresso/60">
+                                      Talla: {producto.talla}
+                                    </p>
+                                    <p className="text-espresso/60">
+                                      Cantidad: {producto.quantity}
+                                    </p>
+                                  </div>
+                                  <div className="flex">
+                                    <Button
+                                      as="button"
+                                      className="font-medium text-terracota hover:text-terracota/80"
+                                    >
+                                      Eliminar
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div className="border-t border-espresso/10 px-4 py-6 sm:px-6">
+                  <div className="flex justify-between font-sans font-medium text-body-lg text-espresso">
+                    <p>Subtotal</p>
+                    <p>$238.000</p>
+                  </div>
+                  <p className="mt-0.5 text-sm text-espresso/60">
+                    El costo de envío se suma al total luego de confirmar el
+                    pedido
+                  </p>
+                  <div className="mt-6">
+                    <a
+                      href="#"
+                      className="flex items-center justify-center rounded-md border 
+                      border-transparent bg-terracota px-6 py-3 text-body-lg 
+                      font-medium text-cream shadow-xs hover:bg-terracota/60
+                      transition-all ease-in-out duration-200"
+                    >
+                      Confirmar pedido
+                    </a>
+                  </div>
+                  <div className="mt-6 flex justify-center text-center text-body-sm text-espresso/60 ">
+                    <p>
+                      o{" "}
+                      <Button
+                        as="button"
+                        onClick={closeDrawer}
+                        className="font-medium text-espresso/60 hover:text-espresso"
+                      >
+                        {" "}
+                        Sigue comprando
+                        <span aria-hidden="true">&rarr;</span>
+                      </Button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </DialogPanel>
+          </div>
+        </div>
+      </div>
+    </Dialog>
+  );
+}

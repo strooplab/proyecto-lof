@@ -1,0 +1,175 @@
+"use client";
+import { useState, useEffect, Fragment } from "react";
+import { Disclosure, Button, Transition } from "@headlessui/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { usePanel } from "@/components/context/PanelContext";
+import { navigation } from "@/components/ui/navigation";
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
+export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { activeDrawer, openDrawer } = usePanel();
+  const pathname = usePathname();
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    handleScroll(); // Si la página abre en estado scroll
+    window.addEventListener("scroll", handleScroll, { passive: true }); // passive: true Mejora la velocidad de render de la animación
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navBg = isScrolled
+    ? "bg-cream text-espresso shadow-sm backdrop-blur-md"
+    : "bg-transparent text-cream";
+
+  const linkHover = isScrolled
+    ? "hover:bg-espresso/5 hover:text-espresso"
+    : "hover:bg-cream/5 hover:text-cream";
+
+  const iconButtonHover = isScrolled
+    ? "hover:bg-espresso/5 active:bg-espresso/20"
+    : "hover:bg-cream/5 active:bg-cream/20";
+
+  return (
+    <Disclosure
+      as="nav"
+      className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 p-3 ${navBg}`} // Nav Scroll Behavior
+    >
+      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div className="relative flex h-16 items-center justify-between">
+          <div className="flex items-center justify-center rounded-md sm:hidden sm:inset-auto sm:mr-6 sm:pl-0">
+            {/* Mobile Menu Button */}
+            <Button
+              className="absolute inset-y-0 left-0 items-center justify-center"
+              as="button"
+              onClick={() => openDrawer("Menu")}
+              aria-expanded={activeDrawer === "Menu"}
+            >
+              <span className="absolute -inset-1.5" />
+              <span className="sr-only">Abrir menú principal</span>
+              {/* Menu Icon */}
+              <span className="relative inline-flex items-center justify-center rounded-md focus:outline-none">
+                <Transition
+                  as={Fragment}
+                  show={activeDrawer !== "Menu"}
+                  enter="transition-all duration-200 ease-in-out"
+                  enterFrom="opacity-0 rotate-90 scale-75"
+                  enterTo="opacity-100 rotate-0 scale-100"
+                  leave="transition-all duration-200 ease-in-out"
+                  leaveFrom="opacity-100 rotate-0 scale-100"
+                  leaveTo="opacity-0 rotate-90 scale-75"
+                >
+                  <span
+                    className={classNames(
+                      "material-symbols-outlined text-2xl rounded-md p-2 leading-none transition-all ease-in-out duration-200",
+                      iconButtonHover,
+                    )}
+                  >
+                    menu
+                  </span>
+                </Transition>
+                <Transition
+                  as={Fragment}
+                  show={activeDrawer === "Menu"}
+                  enter="transition-all duration-200 ease-in-out"
+                  enterFrom="opacity-0 rotate-90 scale-75"
+                  enterTo="opacity-100 rotate-0 scale-100"
+                  leave="transition-all duration-200 ease-in-out"
+                  leaveFrom="opacity-100 rotate-0 scale-100"
+                  leaveTo="opacity-0 rotate-90 scale-75"
+                >
+                  <span
+                    className={classNames(
+                      "material-symbols-outlined text-2xl rounded-md p-2 leading-none",
+                      iconButtonHover,
+                    )}
+                  >
+                    close
+                  </span>
+                </Transition>{" "}
+              </span>
+            </Button>
+          </div>
+          {/* </Link> */}
+          {/* Local */}
+          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+            <div className="flex shrink-0 items-center">
+              <Link
+                href="/"
+                className="font-display text-3xl font-bold md:text-4xl tracking-tight uppercase"
+              >
+                <span className="inline sm:hidden">LOA</span>
+                <span className="hidden sm:inline">LOA</span>
+              </Link>
+            </div>
+            <div className="hidden sm:ml-6 sm:block">
+              <div className="flex space-x-4">
+                {navigation.map((item) => {
+                  const isCurrent = pathname === item.href;
+                  return (
+                    <Button
+                      as="a"
+                      key={item.name}
+                      href={item.href}
+                      aria-current={isCurrent ? "page" : undefined}
+                      className={classNames(
+                        isCurrent
+                          ? "text-body-lg font-bold text-cream bg-mocha/80"
+                          : classNames("text-body-lg", linkHover),
+                        "rounded-md px-4 py-2 font-sans text-body-lg transition-all ease-in-out duration-200",
+                      )}
+                    >
+                      {item.name}
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          <div className="absolute inset-y-0 right-0 flex items-center gap-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 md:gap-4">
+            <Button
+              as="button"
+              onClick={() => openDrawer("Buscar")}
+              aria-expanded={activeDrawer === "Buscar"}
+              className={classNames(
+                "relative inline-flex items-center justify-center rounded-md p-2 transition-all duration-200 ease-in-out",
+                iconButtonHover,
+              )}
+            >
+              <span className="absolute -inset-1.5" />
+              <span className="sr-only">Buscar</span>
+              <span className="material-symbols-outlined text-2xl leading-none">
+                search
+              </span>
+            </Button>
+            <div className="flex items-center justify-center">
+              <Button
+                as="button"
+                onClick={() => openDrawer("Carrito")}
+                aria-expanded={activeDrawer === "Carrito"}
+                className={classNames(
+                  "relative inline-flex items-center justify-center rounded-md p-2 focus:outline-none transition-all duration-200 ease-in-out",
+                  iconButtonHover,
+                )}
+              >
+                <span className="absolute -inset-1.5" />
+                <span className="sr-only">Carrito</span>
+                <span className="material-symbols-outlined text-2xl leading-none">
+                  shopping_cart
+                </span>
+              </Button>
+              <p className="flex text-sans text-body-sm xl:text-heading-md">
+                3
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Disclosure>
+  );
+}
