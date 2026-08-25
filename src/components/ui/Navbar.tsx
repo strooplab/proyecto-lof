@@ -119,62 +119,52 @@ export default function Navbar() {
               <div className="flex space-x-4">
                 {navigation.map((item) =>
                   item.children ? (
-                    <Disclosure
+                    <div
                       key={item.name}
-                      as="div"
                       className={classNames(
-                        "relative rounded-md text-right",
+                        "relative group rounded-md text-right",
                         linkHover,
                       )}
                     >
-                      {({ open }) => (
-                        <>
-                          <DisclosureButton
-                            className={classNames(
-                              "inline-flex gap-2 items-center border-b px-3 py-2 font-sans text-body-lg transition-all ease-in-out duration-200",
-                              linkHover,
-                              pathname === item.href
-                                ? classNames("font-semibold", linkSelected)
-                                : "border-transparent hover:font-semibold",
-                              open && classNames("font-semibold", linkSelected),
-                            )}
-                          >
-                            {item.name}
-                            <span
+                      <div
+                        className={classNames(
+                          "inline-flex gap-2 items-center border-b px-3 py-2 font-sans text-body-lg transition-all ease-in-out duration-200 cursor-pointer",
+                          linkHover,
+                          pathname === item.href
+                            ? classNames("font-semibold", linkSelected)
+                            : "border-transparent hover:font-semibold",
+                        )}
+                      >
+                        {item.name}
+                        <span
+                          className={classNames(
+                            "material-symbols-outlined text-sm fill-cream transition-all ease-in-out duration-200 group-hover:rotate-180",
+                          )}
+                        >
+                          expand_more
+                        </span>
+                      </div>
+                      <nav className="absolute hidden group-hover:block origin-top-right w-48 bg-cream shadow-lg shadow-cream/40 divide-y divide-espresso/10 rounded-md mt-2 z-50">
+                        {item.children.map((child) => {
+                          const isCurrent = pathname === child.href;
+                          return (
+                            <Button
+                              as="a"
+                              key={child.name}
+                              href={child.href}
                               className={classNames(
-                                "material-symbols-outlined text-sm fill-cream transition-all ease-in-out duration-200",
-                                open ? "rotate-180" : "",
+                                isCurrent
+                                  ? "text-body-lg font-bold text-cream bg-mocha"
+                                  : "text-espresso hover:bg-mocha/20 hover:text-espresso/80",
+                                "group/item flex w-full items-center px-4 py-3 font-sans text-body-lg transition-all ease-in-out duration-200",
                               )}
                             >
-                              expand_more
-                            </span>
-                          </DisclosureButton>
-                          <DisclosurePanel
-                            transition
-                            className="absolute origin-top-right w-full bg-cream shadow-lg shadow-cream/40 divide-y divide-espresso/10 rounded-md mt-2 data-closed:opacity-0"
-                          >
-                            {item.children.map((child) => {
-                              const isCurrent = pathname === child.href;
-                              return (
-                                <Button
-                                  as="a"
-                                  key={child.name}
-                                  href={child.href}
-                                  className={classNames(
-                                    isCurrent
-                                      ? "text-body-lg font-bold text-cream bg-mocha"
-                                      : "text-espresso hover:bg-mocha/20 hover:text-espresso/80",
-                                    "group flex w-full items-center px-4 py-3 font-sans text-body-lg transition-all ease-in-out duration-200",
-                                  )}
-                                >
-                                  {child.name}
-                                </Button>
-                              );
-                            })}
-                          </DisclosurePanel>
-                        </>
-                      )}
-                    </Disclosure>
+                              {child.name}
+                            </Button>
+                          );
+                        })}
+                      </nav>
+                    </div>
                   ) : (
                     <Button
                       as="a"
