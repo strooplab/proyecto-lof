@@ -4,6 +4,7 @@
   /* --- Material Symbols Outlined --- */
   /* --- Paleta Lof --- */
   --cream: #fdf8f3;
+  --cream-80: #fdf8f380;
   --blush: #f5ddd6;
   --linen: #e8ddd0;
   --sand: #d4c4b0;
@@ -19,6 +20,11 @@
   /* --- DEFAULT --- */
   --background: var(--cream);
   --foreground: var(--espresso);
+
+  /* --- Swiper --- */
+  --swiper-navigation-color: --espresso;
+  --swiper-navigation-size: 30px;
+  --swiper-background-color: --cream-80;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -112,4 +118,65 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/* Estilos de swipers */
+.swiper-pagination-bullet {
+  width: 10px !important;
+  height: 10px !important;
+  background: transparent !important;
+  border: 1px solid var(--cream) !important;
+  border-radius: 20px !important;
+  opacity: 0.5 !important;
+  transition: all 0.4s ease-out;
+}
+
+.swiper-pagination-bullet-active {
+  margin-inline: 0.5rem !important;
+  border-radius: 10px !important;
+  width: 30px !important;
+  background: var(--cream) !important;
+  opacity: 1 !important;
+  transform: scale(1.2);
+}
+
+@keyframes slowZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1); /* Zoom +10% */
+  }
+}
+
+.animate-slow-zoom {
+  animation: slowZoom 10s ease-out infinite alternate;
+}
+/* Swiper Categorias */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.swiper-button-next svg,
+.swiper-button-prev svg {
+  /* Flecha */
+  color: var(--espresso) !important;
+  font-weight: bold;
+  background: var(--cream);
+  border-radius: 50%;
+  padding: 10px;
+  width: 36px !important;
+  height: 36px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 16px !important;
+  font-weight: bold;
 }

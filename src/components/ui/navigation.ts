@@ -11,8 +11,9 @@ export const navigation: NavItem[] = [
     href: "/colecciones",
     children: [
       { name: "Ver todo", href: "/categorias" },
-      { name: "Camisas", href: "/categorias/camisas" },
-      { name: "Pantalones/Faldas", href: "/categorias/pantalones-faldas" },
+      { name: "Blusas", href: "/categorias/camisas" },
+      { name: "Pantalones", href: "/categorias/pantalones" },
+      { name: "Faldas", href: "/categorias/faldas" },
       { name: "Vestidos", href: "/categorias/vestidos" },
       { name: "Sobretodos", href: "/categorias/sobretodos" },
       { name: "Accesorios", href: "/categorias/accesorios" },

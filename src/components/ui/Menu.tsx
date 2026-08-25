@@ -34,11 +34,11 @@ export default function Menubar() {
       <div className="fixed inset-0 flex">
         <DialogPanel
           transition
-          className="relative flex h-full w-full max-w-xs flex-col bg-cream p-4
+          className="relative flex h-full w-full max-w-xs flex-col bg-cream 
           shadow-xl shadow-blue-gray-900/5 transition-transform duration-300 ease-in-out
           data-closed:-translate-x-full"
         >
-          <div className="flex items-center justify-between pb-4">
+          <div className="flex items-center justify-between p-4 pb-4">
             <div className="flex flex-col items-start justify-between">
               <Link
                 href="/"
@@ -72,7 +72,7 @@ export default function Menubar() {
                   {({ open }) => (
                     <>
                       <DisclosureButton
-                        className="flex w-full items-center justify-between px-4 py-3 font-sans 
+                        className="flex w-full items-center justify-between px-6 py-3 font-sans 
                       text-body-lg text-espresso/80 hover:bg-espresso/5 rounded-md transition-all ease-in-out duration-200"
                       >
                         {item.name}
@@ -99,7 +99,7 @@ export default function Menubar() {
                                 isCurrent
                                   ? "font-bold bg-gold-dark/60 text-cream"
                                   : "text-espresso/80 hover:bg-gold-dark/5",
-                                "rounded-md inset-0 px-4 py-3 font-sans text-body-lg transition-all ease-in-out duration-200",
+                                "inset-0 px-6 py-3 font-sans text-body-lg transition-all ease-in-out duration-200",
                               )}
                             >
                               {child.name}
@@ -121,7 +121,7 @@ export default function Menubar() {
                     pathname === item.href
                       ? "font-bold bg-gold-dark/60 text-cream"
                       : "text-espresso/80 hover:bg-gold-dark/5",
-                    "rounded-md inset-0 px-4 py-3 font-sans text-body-lg transition-all ease-in-out duration-200",
+                    "inset-0 px-6 py-3 font-sans text-body-lg transition-all ease-in-out duration-200",
                   )}
                 >
                   {item.name}

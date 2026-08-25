@@ -12,14 +12,14 @@ export default function PublicLayout({
 }) {
   return (
     <ContextProvider>
-      <div className="min-h-screen flex flex-col">
+      <div className="relative min-h-screen flex flex-col bg-cream">
         <Navbar />
         <Menubar />
         <Carrito />
         <Buscar />
         <main className="grow">{children}</main>
+        <Footer />
       </div>
-      <Footer />
     </ContextProvider>
   );
 }

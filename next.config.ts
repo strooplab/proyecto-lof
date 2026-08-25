@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/photos/**",
       },
+      {
+        protocol: "https",
+        hostname: "pub-415cf98523294c368075ea9561ec3752.r2.dev",
+        pathname: "/**",
+      },
     ],
   },
 };

@@ -14,12 +14,12 @@ export type Producto = {
 export default function ProductCard({ producto }: { producto: Producto }) {
   return (
     <div className="group relative">
-      <div className="aspect-square w-full overflow-hidden rounded-md bg-cream/50 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80 border border-espresso/10">
+      <div className="aspect-square w-full overflow-hidden rounded-md bg-cream/50 object-cover group-hover:opacity-80 lg:aspect-auto lg:h-80 border border-espresso/10">
         <Image
           src={producto.imageSrc[0]} // Si tiene muchas imagenes para el card solo se usa una
           alt={producto.imageAlt}
-          width={260}
-          height={260}
+          width={500}
+          height={500}
           className="size-full object-cover"
         />
       </div>
