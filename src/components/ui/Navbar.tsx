@@ -121,10 +121,7 @@ export default function Navbar() {
                   item.children ? (
                     <div
                       key={item.name}
-                      className={classNames(
-                        "relative group rounded-md text-right",
-                        linkHover,
-                      )}
+                      className="relative group rounded-md text-right"
                     >
                       <div
                         className={classNames(
@@ -136,33 +133,31 @@ export default function Navbar() {
                         )}
                       >
                         {item.name}
-                        <span
-                          className={classNames(
-                            "material-symbols-outlined text-sm fill-cream transition-all ease-in-out duration-200 group-hover:rotate-180",
-                          )}
-                        >
+                        <span className="material-symbols-outlined text-sm fill-cream transition-all ease-in-out duration-200 group-hover:rotate-180">
                           expand_more
                         </span>
                       </div>
-                      <nav className="absolute hidden group-hover:block origin-top-right w-48 bg-cream shadow-lg shadow-cream/40 divide-y divide-espresso/10 rounded-md mt-2 z-50">
-                        {item.children.map((child) => {
-                          const isCurrent = pathname === child.href;
-                          return (
-                            <Button
-                              as="a"
-                              key={child.name}
-                              href={child.href}
-                              className={classNames(
-                                isCurrent
-                                  ? "text-body-lg font-bold text-cream bg-mocha"
-                                  : "text-espresso hover:bg-mocha/20 hover:text-espresso/80",
-                                "group/item flex w-full items-center px-4 py-3 font-sans text-body-lg transition-all ease-in-out duration-200",
-                              )}
-                            >
-                              {child.name}
-                            </Button>
-                          );
-                        })}
+                      <nav className="absolute hidden group-hover:block origin-top-right w-48 pt-2 z-50">
+                        <div className="bg-cream shadow-lg shadow-cream/40 divide-y divide-espresso/10 rounded-md overflow-hidden">
+                          {item.children.map((child) => {
+                            const isCurrent = pathname === child.href;
+                            return (
+                              <Button
+                                as="a"
+                                key={child.name}
+                                href={child.href}
+                                className={classNames(
+                                  isCurrent
+                                    ? "text-body-lg font-bold text-cream bg-mocha"
+                                    : "text-espresso hover:bg-mocha/20 hover:text-espresso/80",
+                                  "group/item flex w-full items-center px-4 py-3 font-sans text-body-lg transition-all ease-in-out duration-200",
+                                )}
+                              >
+                                {child.name}
+                              </Button>
+                            );
+                          })}
+                        </div>
                       </nav>
                     </div>
                   ) : (
