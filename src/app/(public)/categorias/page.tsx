@@ -69,7 +69,7 @@ export default function Categorias() {
             <div className="relative h-full w-full">
               <Image
                 src="https://pub-415cf98523294c368075ea9561ec3752.r2.dev/Development/src/Banner1.jpg"
-                alt="cover banner"
+                alt="Categorias - Banner"
                 width={1920}
                 height={100}
                 loading="eager"
