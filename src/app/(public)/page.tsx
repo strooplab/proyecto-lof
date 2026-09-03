@@ -6,12 +6,12 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import Image from "next/image";
 import { Button } from "@headlessui/react";
-import ColeccionesSection from "@/components/sections/Colecciones";
+import CategoriesSection from "@/components/sections/Categorias";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-full bg-cream">
+    <div className="min-h-full">
       <main className="mx-auto mb-10">
         <section className="min-w-full">
           {/* Landing Page Content */}
@@ -21,7 +21,7 @@ export default function Home() {
             autoplay={{ delay: 5000, disableOnInteraction: false }}
             pagination={{ clickable: true }}
             speed={500}
-            className="h-200 md:h-350 w-full"
+            className="h-200 md:h-300 w-full"
           >
             {/* Slide 1 */}
             <SwiperSlide className="relative h-full w-full">
@@ -44,7 +44,11 @@ export default function Home() {
                     Apasiona e inspira a quienes amas con lo mejor de la moda.
                   </p>
                   <div className="flex justify-center gap-2">
-                    <Button className="rounded-lg bg-cream px-5 py-3 font-medium text-espresso hover:bg-cream/80 transition">
+                    <Button
+                      as="a"
+                      href="/categorias"
+                      className="rounded-lg bg-cream px-5 py-3 font-medium text-espresso hover:bg-cream/80 transition"
+                    >
                       Explora
                     </Button>
                     <Button className="rounded-lg border border-cream px-5 py-3 font-medium text-cream hover:bg-cream/10 transition">
@@ -72,7 +76,11 @@ export default function Home() {
                     La experiencia de más de 30 años de trabajo que nos une.
                   </p>
                   <div className="flex gap-2">
-                    <Button className="rounded-lg bg-cream px-5 py-3 font-medium text-espresso hover:bg-cream/80 transition">
+                    <Button
+                      as="a"
+                      href="/categorias"
+                      className="rounded-lg bg-cream px-5 py-3 font-medium text-espresso hover:bg-cream/80 transition"
+                    >
                       Explora
                     </Button>
                     <Button className="rounded-lg border border-cream px-5 py-3 font-medium text-cream hover:bg-cream/10 transition">
@@ -102,7 +110,11 @@ export default function Home() {
                     <span className="font-bold">soñar</span>.
                   </p>{" "}
                   <div className="flex gap-2">
-                    <Button className="rounded-lg bg-cream px-5 py-3 font-medium text-espresso hover:bg-cream/80 transition">
+                    <Button
+                      as="a"
+                      href="/categorias"
+                      className="rounded-lg bg-cream px-5 py-3 font-medium text-espresso hover:bg-cream/80 transition"
+                    >
                       Explora
                     </Button>
                     <Button className="rounded-lg border border-cream px-5 py-3 font-medium text-cream hover:bg-cream/10 transition">
@@ -138,7 +150,7 @@ export default function Home() {
           </div>
         </section>
         <section className="mx-auto h-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-          <ColeccionesSection />
+          <CategoriesSection />
         </section>
         <section className="mx-auto h-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative isolate overflow-hidden bg-gold-light/40 px-6 py-24 sm:py-32 lg:px-8">

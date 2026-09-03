@@ -5,17 +5,24 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-
+import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
+import { navigation } from "@/data/navigation";
 import { MOCK_PRODUCTS } from "@/data/dataProductos";
 
-const CATEGORIES = ["Blusas", "Pantalones", "Faldas"];
+const categoriasItem = navigation.find((item) => item.href === "/categorias");
 
-export default function ColeccionesSection() {
+const CATEGORIES = categoriasItem?.children
+  ? categoriasItem.children.map((child) => child.name).slice(1, 4)
+  : ["Blusas", "Pantalones", "Faldas"]; // Fallback
+
+export default function CategoriesSection() {
   const [activeTab, setActiveTab] = useState(CATEGORIES[0]);
 
   // Prototipo vista previa de categorías destacadas
-  const productosFiltrados = MOCK_PRODUCTS;
+  const productosFiltrados = MOCK_PRODUCTS.filter((producto) => {
+    return producto.categoria.toLowerCase() === activeTab.toLowerCase();
+  });
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -38,12 +45,12 @@ export default function ColeccionesSection() {
         </nav>
 
         {/* Enlace Ver Todo  */}
-        <a
-          href="/colecciones"
+        <Link
+          href="/categorias"
           className="font-sans text-xs font-bold uppercase tracking-widest text-espresso hover:underline order-1 sm:order-2 self-start sm:self-auto"
         >
           Ver todo &rarr;
-        </a>
+        </Link>
       </div>
 
       {/* Carrusel de productos */}
