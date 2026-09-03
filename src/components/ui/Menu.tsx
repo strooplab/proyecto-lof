@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePanel } from "@/components/context/PanelContext";
-import { navigation } from "@/components/ui/navigation";
+import { navigation } from "@/data/navigation";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");

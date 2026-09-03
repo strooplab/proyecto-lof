@@ -4,12 +4,9 @@ import Carrito from "@/components/ui/Carrito";
 import Buscar from "@/components/ui/Buscar";
 import { ContextProvider } from "@/components/context/PanelContext";
 import Footer from "@/components/ui/Footer";
+import FloatingWhatsApp from "@/components/ui/FloatingWhatsapp";
 
-export default function PublicLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <ContextProvider>
       <div className="relative min-h-screen flex flex-col bg-cream">
@@ -19,6 +16,7 @@ export default function PublicLayout({
         <Buscar />
         <main className="grow">{children}</main>
         <Footer />
+        <FloatingWhatsApp />
       </div>
     </ContextProvider>
   );

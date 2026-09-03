@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const footerNavList = [
   {
-    label: "Colecciones",
+    label: "Categorias",
     items: [
       {
         label: "Blusas",
