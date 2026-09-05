@@ -1,12 +1,7 @@
 "use client";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-  Button,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, Button } from "@headlessui/react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePanel } from "@/components/context/PanelContext";
 
 // TEMPORAL: Contenido de ejemplo
@@ -19,8 +14,7 @@ const productos = [
     talla: "xs",
     price: "$90.000",
     quantity: 1,
-    imageSrc:
-      "https://images.pexels.com/photos/9558584/pexels-photo-9558584.jpeg",
+    imageSrc: "https://images.pexels.com/photos/9558584/pexels-photo-9558584.jpeg",
     imageAlt: "Blusa color salmón de manga semicorta.",
   },
   {
@@ -31,8 +25,7 @@ const productos = [
     talla: "34",
     price: "$120.000",
     quantity: 1,
-    imageSrc:
-      "https://images.pexels.com/photos/10133281/pexels-photo-10133281.jpeg",
+    imageSrc: "https://images.pexels.com/photos/10133281/pexels-photo-10133281.jpeg",
     imageAlt: "Jeans Azul Oscuros Talla 34.",
   },
   {
@@ -43,8 +36,7 @@ const productos = [
     talla: "N/A",
     price: "$28.000",
     quantity: 1,
-    imageSrc:
-      "https://images.pexels.com/photos/15491634/pexels-photo-15491634.jpeg",
+    imageSrc: "https://images.pexels.com/photos/15491634/pexels-photo-15491634.jpeg",
     imageAlt: "Candongas de rodio circonado.",
   },
 ];
@@ -93,10 +85,7 @@ export default function Carrito() {
                   </div>
                   <div className="mt-8">
                     <div className="flow-root">
-                      <ul
-                        role="list"
-                        className="-my-6 divide-y divide-espresso/10"
-                      >
+                      <ul role="list" className="-my-6 divide-y divide-espresso/10">
                         {productos.map((producto) => {
                           return (
                             <li key={producto.id} className="flex py-6">
@@ -113,9 +102,7 @@ export default function Carrito() {
                                 <div>
                                   <div className="flex justify-between text-body-lg font-sans font-medium text-espresso">
                                     <h3>
-                                      <a href={producto.href}>
-                                        {producto.name}
-                                      </a>
+                                      <a href={producto.href}>{producto.name}</a>
                                     </h3>
                                     <p className="ml-4">{producto.price}</p>
                                   </div>
@@ -125,9 +112,7 @@ export default function Carrito() {
                                 </div>
                                 <div className="flex flex-1 items-end justify-between text-body-sm">
                                   <div className="flex flex-col mt-3">
-                                    <p className="text-espresso/60">
-                                      Talla: {producto.talla}
-                                    </p>
+                                    <p className="text-espresso/60">Talla: {producto.talla}</p>
                                     <p className="text-espresso/60">
                                       Cantidad: {producto.quantity}
                                     </p>
@@ -155,19 +140,18 @@ export default function Carrito() {
                     <p>$238.000</p>
                   </div>
                   <p className="mt-0.5 text-sm text-espresso/60">
-                    El costo de envío se suma al total luego de confirmar el
-                    pedido
+                    El costo de envío se suma al total luego de confirmar el pedido
                   </p>
                   <div className="mt-6">
-                    <a
-                      href="#"
+                    <Link
+                      href="/checkout"
                       className="flex items-center justify-center rounded-md border 
                       border-transparent bg-terracota px-6 py-3 text-body-lg 
                       font-medium text-cream shadow-xs hover:bg-terracota/60
                       transition-all ease-in-out duration-200"
                     >
                       Confirmar pedido
-                    </a>
+                    </Link>
                   </div>
                   <div className="mt-6 flex justify-center text-center text-body-sm text-espresso/60 ">
                     <p>
