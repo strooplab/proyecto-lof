@@ -1,9 +1,11 @@
 // @/components/ui/FloatingWhatsApp.tsx
+
 import Link from "next/link";
 import whatsapp from "@/utils/sendWhatsappMessage";
 
 export default function FloatingWhatsApp() {
   const whatsappMessage = whatsapp();
+
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <Link

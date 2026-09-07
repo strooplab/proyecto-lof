@@ -73,7 +73,7 @@ export default function Carrito() {
                                 <div className="size-24 shrink-0 overflow-hidden rounded-md border border-espresso/10">
                                   <Image
                                     src={producto.imagen}
-                                    alt={""}
+                                    alt={producto.nombre || ""}
                                     width={360}
                                     height={360}
                                     className="size-full object-cover"
@@ -84,7 +84,7 @@ export default function Carrito() {
                                     <div className="flex justify-between text-body-lg font-sans font-medium text-espresso">
                                       <h3>
                                         <Link
-                                          href={`${producto.categoria_slug}/${producto.slug}`}
+                                          href={`/${producto.categoria_slug}/${producto.slug}`}
                                           onClick={closeDrawer}
                                         >
                                           {producto.nombre}
@@ -106,6 +106,7 @@ export default function Carrito() {
                                     <div className="flex">
                                       <Button
                                         as="button"
+                                        onClick={() => removeItem(producto.id)}
                                         className="font-medium text-terracota hover:text-terracota/80"
                                       >
                                         Eliminar
@@ -121,6 +122,7 @@ export default function Carrito() {
                     )}
                   </div>
                 </div>
+
                 {items.length > 0 && (
                   <div className="border-t border-espresso/10 px-4 py-6 sm:px-6">
                     <div className="flex justify-between font-sans font-medium text-body-lg text-espresso">
@@ -135,22 +137,21 @@ export default function Carrito() {
                         href="/checkout"
                         onClick={closeDrawer}
                         className="flex items-center justify-center rounded-md border 
-                      border-transparent bg-terracota px-6 py-3 text-body-lg 
-                      font-medium text-cream shadow-xs hover:bg-terracota/60
-                      transition-all ease-in-out duration-200"
+                        border-transparent bg-terracota px-6 py-3 text-body-lg 
+                        font-medium text-cream shadow-xs hover:bg-terracota/90
+                        transition-all ease-in-out duration-200"
                       >
                         Confirmar pedido
                       </Link>
                     </div>
-                    <div className="mt-6 flex justify-center text-center text-body-sm text-espresso/60 ">
+                    <div className="mt-6 flex justify-center text-center text-body-sm text-espresso/60">
                       <p>
                         o{" "}
                         <Button
                           as="button"
                           onClick={closeDrawer}
-                          className="font-medium text-espresso/60 hover:text-espresso"
+                          className="font-medium text-espresso/60 hover:text-espresso inline-flex items-center gap-1"
                         >
-                          {" "}
                           Sigue comprando
                           <span aria-hidden="true">&rarr;</span>
                         </Button>
