@@ -1,3 +1,4 @@
+// auth.ts
 import { betterAuth } from "better-auth";
 import { username } from "better-auth/plugins";
 import { pool } from "@/lib/db"; // TEMPORAL: DB PG fuera de producción

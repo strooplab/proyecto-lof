@@ -1,25 +1,28 @@
 "use client";
 import { useState, useEffect, Fragment } from "react";
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Button,
-  Transition,
-} from "@headlessui/react";
+import { Disclosure, Button, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePanel } from "@/components/context/PanelContext";
-import { navigation } from "@/data/navigation";
+import { NavItem } from "@/data/navigation";
+import { useCarrito } from "@/store/useCarrito";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Navbar() {
+export default function Navbar({ navigation }: { navigation: NavItem[] }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const { activeDrawer, openDrawer } = usePanel();
   const pathname = usePathname();
+
+  const totalItems = useCarrito((state) => state.getTotalItems());
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -31,7 +34,6 @@ export default function Navbar() {
 
   // Algunas páginas tienen un banner decorativo, si no lo tiene la navbar estará sobre un fondo blanco
   const isNoBannerPage = pathname.split("/").length > 2 && !pathname.startsWith("/categorias");
-
   const effectiveScrolled = isScrolled || isNoBannerPage;
 
   const navBg = effectiveScrolled
@@ -211,7 +213,9 @@ export default function Navbar() {
                   shopping_cart
                 </span>
               </Button>
-              <p className="flex text-sans text-body-sm xl:text-heading-md">3</p>
+              <p className="flex text-sans text-body-sm xl:text-heading-md min-w-3">
+                {isMounted ? totalItems : 0}
+              </p>
             </div>
           </div>
         </div>
