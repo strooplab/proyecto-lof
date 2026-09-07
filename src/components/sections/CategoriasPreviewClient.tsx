@@ -1,46 +1,58 @@
+// @/components/sections/CategoriasPreviewClient.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import { Button } from "@headlessui/react";
 import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
-import { navigation } from "@/data/navigation";
-import { MOCK_PRODUCTS } from "@/data/dataProductos";
+import { Categoria, Producto } from "@/types/productPreview";
 
-const categoriasItem = navigation.find((item) => item.href === "/categorias");
+interface CategoriesClientProps {
+  initialCategories: Categoria[];
+  initialProducts: Producto[];
+}
 
-const CATEGORIES = categoriasItem?.children
-  ? categoriasItem.children.map((child) => child.name).slice(1, 4)
-  : ["Blusas", "Pantalones", "Faldas"]; // Fallback
+export default function Preview({ initialCategories, initialProducts }: CategoriesClientProps) {
+  const [activeTab, setActiveTab] = useState<string>(initialCategories[0]?.slug || "");
+  const [productos, setProductos] = useState<Producto[]>(initialProducts);
+  const [, startTransition] = useTransition();
 
-export default function CategoriesSection() {
-  const [activeTab, setActiveTab] = useState(CATEGORIES[0]);
-
-  // Prototipo vista previa de categorías destacadas
-  const productosFiltrados = MOCK_PRODUCTS.filter((producto) => {
-    return producto.categoria.toLowerCase() === activeTab.toLowerCase();
-  });
+  const handleTabChange = async (slug: string) => {
+    setActiveTab(slug);
+    startTransition(async () => {
+      try {
+        const res = await fetch(`/api/public/productos/preview?categoria=${slug}`);
+        if (res.ok) {
+          const data = await res.json();
+          setProductos(data);
+        }
+      } catch (e) {
+        console.error("Error fetching products: ", e);
+      }
+    });
+  };
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8 border-b border-espresso/20 pb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         {/* Navegación de categorías */}
         <nav className="flex space-x-6 overflow-x-auto w-full sm:w-auto hide-scrollbar order-2 sm:order-1">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveTab(cat)}
+          {initialCategories.map((cat) => (
+            <Button
+              key={cat.id}
+              onClick={() => handleTabChange(cat.slug)}
               className={`font-display text-sm font-bold uppercase tracking-widest transition-colors whitespace-nowrap ${
-                activeTab === cat
+                activeTab === cat.slug
                   ? "border-b-2 border-espresso text-espresso pb-2"
                   : "font-normal text-espresso/60 hover:text-espresso pb-2 transition-all ease-in-out duration-200"
               }`}
             >
-              {cat}
-            </button>
+              {cat.nombre}
+            </Button>
           ))}
         </nav>
 
@@ -62,12 +74,11 @@ export default function CategoriesSection() {
           slidesPerView={1.2} // Vista Móvil
           breakpoints={{
             640: { slidesPerView: 2.2 },
-            768: { slidesPerView: 3 },
             1024: { slidesPerView: 4, spaceBetween: 24 }, // Vista Desktop
           }}
           className="w-full pb-4"
         >
-          {productosFiltrados.map((producto) => (
+          {productos.map((producto) => (
             <SwiperSlide key={producto.id}>
               <ProductCard producto={producto} />
             </SwiperSlide>

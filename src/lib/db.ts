@@ -1,9 +1,8 @@
-// auth.ts
-// import "server-only";
+// @/lib/db.ts
 import { Pool } from "pg";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ debug: true });
 // Configuración de conexión
 const databaseConfig = {
   user: process.env.DB_USER,
@@ -11,10 +10,7 @@ const databaseConfig = {
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD || "5432",
   port: process.env.DB_PORT,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 };
 
 let pool: Pool;
@@ -32,7 +28,7 @@ if (process.env.NODE_ENV === "production") {
     connectionTimeoutMillis: 2000,
   });
 } else {
-  // En deivelopment se usa una variable global para que el pool no se reinicie en cada hotreload.
+  // En development se usa una variable global para que el pool no se reinicie en cada hotreload.
   const globalPgPool = globalThis as unknown as {
     __pgPool: Pool | undefined;
   };
@@ -52,10 +48,7 @@ if (process.env.NODE_ENV === "production") {
   pool = globalPgPool.__pgPool;
 }
 
-export const query = async <T = unknown[]>(
-  text: string,
-  params?: unknown[],
-): Promise<T[]> => {
+export const query = async <T = unknown[]>(text: string, params?: unknown[]): Promise<T[]> => {
   try {
     const result = await pool.query(text, params);
     return result.rows;

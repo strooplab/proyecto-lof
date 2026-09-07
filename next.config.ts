@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const nextConfig: NextConfig = {
   allowedDevOrigins: [process.env.LOCAL_ORIGIN || "localhost"],
+  cacheComponents: true,
   images: {
     remotePatterns: [
       {

@@ -11,13 +11,13 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePanel } from "@/components/context/PanelContext";
-import { navigation } from "@/data/navigation";
+import { NavItem } from "@/data/navigation";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Menubar() {
+export default function Menubar({ navigation }: { navigation: NavItem[] }) {
   const { activeDrawer, closeDrawer } = usePanel();
   const isOpen = activeDrawer === "Menu";
   const pathname = usePathname();
@@ -40,10 +40,7 @@ export default function Menubar() {
         >
           <div className="flex items-center justify-between p-4 pb-4">
             <div className="flex flex-col items-start justify-between">
-              <Link
-                href="/"
-                className="flex flex-col items-start tracking-tight uppercase gap-1"
-              >
+              <Link href="/" className="flex flex-col items-start tracking-tight uppercase gap-1">
                 <span className="font-display font-bold text-heading-xl text-espresso">
                   LUCERO ORTEGA
                 </span>
@@ -60,9 +57,7 @@ export default function Menubar() {
               className="relative -m-2 p-2 text-espresso/80 hover:text-espresso"
             >
               <span className="absolute -inset-0.5" />
-              <span className="material-symbols-outlined text-2xl leading-none">
-                close
-              </span>
+              <span className="material-symbols-outlined text-2xl leading-none">close</span>
             </Button>
           </div>
           <nav className="flex flex-col divide-y divide-espresso/10">
@@ -86,7 +81,7 @@ export default function Menubar() {
                         </span>
                       </DisclosureButton>
                       <DisclosurePanel className="flex flex-col">
-                        {item.children.map((child) => {
+                        {item.children?.map((child) => {
                           const isCurrent = pathname === child.href;
                           return (
                             <Button
