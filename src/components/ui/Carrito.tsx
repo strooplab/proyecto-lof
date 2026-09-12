@@ -69,10 +69,13 @@ export default function Carrito() {
                         <ul role="list" className="-my-6 divide-y divide-espresso/10">
                           {items.map((producto) => {
                             return (
-                              <li key={producto.id} className="flex py-6">
+                              <li
+                                key={`${producto.id}-${producto.talla}-${producto.color}`}
+                                className="flex py-6"
+                              >
                                 <div className="size-24 shrink-0 overflow-hidden rounded-md border border-espresso/10">
                                   <Image
-                                    src={producto.imagen}
+                                    src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${producto.imagen}`}
                                     alt={producto.nombre || ""}
                                     width={360}
                                     height={360}
@@ -99,14 +102,65 @@ export default function Carrito() {
                                   <div className="flex flex-1 items-end justify-between text-body-sm">
                                     <div className="flex flex-col mt-3">
                                       <p className="text-espresso/60">Talla: {producto.talla}</p>
-                                      <p className="text-espresso/60">
-                                        Cantidad: {producto.cantidad}
-                                      </p>
+                                      <div className="mt-8">
+                                        <h3 className="text-sm font-medium text-espresso mb-3">
+                                          Cantidad
+                                        </h3>
+                                        <div className="inline-flex items-center border border-espresso/10 rounded-md overflow-hidden bg-white">
+                                          <Button
+                                            type="button"
+                                            onClick={() =>
+                                              updateCantidad(
+                                                producto.id,
+                                                producto.talla,
+                                                producto.color,
+                                                producto.cantidad - 1,
+                                              )
+                                            }
+                                            className="px-3 py-1.5 text-espresso/70 hover:bg-espresso/5 transition-colors text-sm font-medium cursor-pointer"
+                                            aria-label="Disminuir cantidad"
+                                          >
+                                            -
+                                          </Button>
+                                          <input
+                                            type="number"
+                                            min="1"
+                                            value={producto.cantidad}
+                                            onChange={(e) => {
+                                              const val = parseInt(e.target.value);
+                                              updateCantidad(
+                                                producto.id,
+                                                producto.talla,
+                                                producto.color,
+                                                isNaN(val) ? 1 : val,
+                                              );
+                                            }}
+                                            className="w-12 text-center text-sm font-medium text-espresso bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                          />
+                                          <Button
+                                            type="button"
+                                            onClick={() =>
+                                              updateCantidad(
+                                                producto.id,
+                                                producto.talla,
+                                                producto.color,
+                                                producto.cantidad + 1,
+                                              )
+                                            }
+                                            className="px-3 py-1.5 text-espresso/70 hover:bg-espresso/5 transition-colors text-sm font-medium cursor-pointer"
+                                            aria-label="Aumentar cantidad"
+                                          >
+                                            +
+                                          </Button>
+                                        </div>
+                                      </div>
                                     </div>
                                     <div className="flex">
                                       <Button
                                         as="button"
-                                        onClick={() => removeItem(producto.id)}
+                                        onClick={() =>
+                                          removeItem(producto.id, producto.talla, producto.color)
+                                        }
                                         className="font-medium text-terracota hover:text-terracota/80"
                                       >
                                         Eliminar

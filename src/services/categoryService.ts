@@ -8,10 +8,13 @@ export default async function getCategories(): Promise<Categoria[]> {
   cacheLife("hours");
   try {
     const categorias = await query<Categoria>(
-      `SELECT id, nombre, slug, descripcion
-      FROM categorias
-      WHERE activo = true
-      ORDER BY orden ASC`,
+      `SELECT c.id, c.nombre, c.slug, c.descripcion,
+      COUNT(DISTINCT p.id) AS items
+      FROM categorias c
+      LEFT JOIN productos p ON c.id = p.categoria_id AND p.visible = true
+      WHERE c.activo = true
+      GROUP BY c.id, c.nombre, c.slug, c.descripcion
+      ORDER BY c.orden ASC`,
     );
     return categorias;
   } catch (e) {

@@ -17,18 +17,20 @@ const jost = Jost({
 
 export const metadata: Metadata = {
   title: "Lucero Ortega Atelier",
-  description:
-    "Una página web tipo E-Commerce Boutique con catálogo por categorías.",
+  description: "Una página web tipo E-Commerce Boutique con catálogo por categorías.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${corGaramond.variable} ${jost.variable} h-full antialiased`}
+      translate="no"
+      className={`${corGaramond.variable} ${jost.variable} h-full antialiased notranslate`}
     >
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <meta name="google" content="notranslate" />
+
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=optional"

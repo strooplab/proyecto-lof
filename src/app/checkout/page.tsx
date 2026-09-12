@@ -1,3 +1,4 @@
+// @/src/app/checkout/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -16,25 +17,25 @@ import {
   PopoverPanel,
 } from "@headlessui/react";
 import Image from "next/image";
+import Link from "next/link";
 import clsx from "clsx";
-import { MOCK_PRODUCTS, Producto } from "@/data/dataProductos";
+import { useCarrito } from "@/store/useCarrito";
+import { handleWhatsAppCheckout } from "@/utils/sendCheckoutWhatsappMessage";
 
-export default function Chechoutpage() {
-  const [productos, setProductos] = useState<Producto[]>(MOCK_PRODUCTS);
-  const actualizarCantidad = (id: string, nuevaCantidad: number) => {
-    setProductos((prevProductos) =>
-      prevProductos.map((item) =>
-        item.id === id ? { ...item, quantity: String(nuevaCantidad) } : item,
-      ),
-    );
-  };
+export default function CheckoutPage() {
+  // Datos del carrito
+  const items = useCarrito((state) => state.items);
+  const updateQuantity = useCarrito((state) => state.updateCantidad);
+  const removeItem = useCarrito((state) => state.removeItem);
 
-  const subtotal = productos.slice(1, 4).reduce((acc, producto) => {
-    const precio = Number(producto.price) || 0;
-    const cantidad = Number(producto.quantity) || 1;
+  // Calculo del subtotal
+  const subtotal = items.reduce((acc, producto) => {
+    const precio = Number(producto.precio) || 0;
+    const cantidad = Number(producto.cantidad) || 1;
     return acc + precio * cantidad;
   }, 0);
 
+  // Inicialización de datos del formulario
   const [formData, setFormData] = useState({
     nombre: "",
     celular: "",
@@ -61,17 +62,15 @@ export default function Chechoutpage() {
     if (!formData.nombre || !formData.celular || !formData.ciudad || !formData.direccion) {
       return; // Detiene el envío si falta un campo
     }
-
-    // Lógica para armar el mensaje de Whatsapp
-    console.log("Formulario válido, enviando orden...", formData);
+    handleWhatsAppCheckout(items, subtotal, formData);
   };
 
   return (
     <div className="min-h-full">
-      <main className="mx-auto mb-8 ">
+      <main className="mx-auto mb-8">
         <div className="mx-auto max-w-2xl px-6 mt-8 md:max-w-7xl lg:px-12 lg:mt-16">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            {/* GRID */}
+            {/* RESUMEN DEL CARRITO */}
             <section className="flex flex-col w-full gap-4 p-6 mb-2 bg-cream rounded-xl">
               <div className="bg-cream h-auto">
                 <div className="flex flex-col gap-2 font-sans">
@@ -79,104 +78,137 @@ export default function Chechoutpage() {
                     Tu carrito
                   </h2>
                   <p className="text-espresso/60 text-body-sm">
-                    Verifica cada item y escribe tus datos para crear tu orden.
+                    Verifica cada ítem y escribe tus datos para crear tu orden.
                   </p>
                 </div>
                 <div className="mt-8 p-2">
                   <div className="flow-root">
-                    <ul role="list" className="-my-6 divide-y divide-espresso/10">
-                      {productos.slice(1, 4).map((producto) => {
-                        return (
-                          <li key={producto.id} className="flex py-6">
-                            <div className="size-24 shrink-0 overflow-hidden rounded-md border border-espresso/10">
-                              <Image
-                                src={producto.imageSrc[0]}
-                                alt={producto.imageAlt}
-                                width={360}
-                                height={360}
-                                className="size-full object-cover"
-                              />
-                            </div>
-                            <div className="ml-4 flex flex-1 flex-col">
-                              <div>
-                                <div className="flex justify-between text-body-lg font-sans font-medium text-espresso">
-                                  <h3>
-                                    <a href={producto.href}>{producto.name}</a>
-                                  </h3>
-                                  <p className="ml-4">{producto.price.toLocaleString("CO")}</p>
-                                </div>
-                                {Array.isArray(producto.color) ? (
-                                  producto.color.map((col, idx) => (
-                                    <span key={idx} className="text-xs text-gray-500">
-                                      {col.replace("-", " ")}
-                                      {idx < producto.color.length - 1 ? " • " : ""}
-                                    </span>
-                                  ))
-                                ) : (
-                                  <span className="text-xs text-gray-500">{producto.color}</span>
-                                )}
+                    {items.length === 0 ? (
+                      <p className="text-espresso/60 text-body-sm py-4 text-center">
+                        Tu carrito está vacío.
+                      </p>
+                    ) : (
+                      <ul role="list" className="-my-6 divide-y divide-espresso/10">
+                        {items.map((producto) => {
+                          const imageUrl = Array.isArray(producto.imagen)
+                            ? producto.imagen[0]
+                            : producto.imagen;
+
+                          return (
+                            <li key={producto.id} className="flex py-6">
+                              <div className="size-24 shrink-0 overflow-hidden rounded-md border border-espresso/10">
+                                <Image
+                                  src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${imageUrl}`}
+                                  alt={producto.descripcion || producto.nombre}
+                                  width={360}
+                                  height={360}
+                                  className="size-full object-cover"
+                                />
                               </div>
-                              <div className="flex flex-1 items-end justify-between text-body-sm">
-                                <div className="flex flex-col mt-3">
-                                  <p className="text-espresso/60">Talla: {producto.talla}</p>
-                                  {/* SELECTOR DE CANTIDAD */}
-                                  <div className="flex items-center border border-espresso/10 rounded-md overflow-hidden bg-white">
+                              <div className="ml-4 flex flex-1 flex-col">
+                                <div>
+                                  <div className="flex justify-between text-body-lg font-sans font-medium text-espresso">
+                                    <h3>
+                                      <Link
+                                        href={`/${producto.categoria_slug}/${producto.slug}` || "#"}
+                                      >
+                                        {producto.nombre}
+                                      </Link>
+                                    </h3>
+                                    <p className="ml-4">
+                                      {Number(producto.precio).toLocaleString("CO")}
+                                    </p>
+                                  </div>
+                                  {Array.isArray(producto.color) ? (
+                                    producto.color.map((col, idx) => (
+                                      <span key={idx} className="text-xs text-gray-500">
+                                        {col.replace("-", " ")}
+                                        {idx < producto.color.length - 1 ? " • " : ""}
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span className="text-xs text-gray-500">{producto.color}</span>
+                                  )}
+                                </div>
+                                <div className="flex flex-1 items-end justify-between text-body-sm">
+                                  <div className="flex flex-col mt-3">
+                                    <p className="text-espresso/60">Talla: {producto.talla}</p>
+                                    {/* SELECTOR DE CANTIDAD */}
+                                    <div className="flex items-center border border-espresso/10 rounded-md overflow-hidden bg-white mt-1">
+                                      <Button
+                                        type="button"
+                                        onClick={() => {
+                                          const currencyQty = Number(producto.cantidad) || 1;
+                                          if (currencyQty > 1) {
+                                            updateQuantity(
+                                              producto.id,
+                                              producto.talla,
+                                              producto.color,
+                                              currencyQty - 1,
+                                            );
+                                          }
+                                        }}
+                                        className="px-2.5 py-1 text-espresso/70 hover:bg-espresso/5 transition-colors text-body-sm font-medium"
+                                        aria-label="Disminuir cantidad"
+                                      >
+                                        -
+                                      </Button>
+                                      <Input
+                                        type="number"
+                                        min="1"
+                                        value={producto.cantidad}
+                                        onChange={(e) => {
+                                          const val = parseInt(e.target.value);
+                                          const newQty = isNaN(val) ? 1 : Math.max(1, val);
+                                          updateQuantity(
+                                            producto.id,
+                                            producto.talla,
+                                            producto.color,
+                                            newQty,
+                                          );
+                                        }}
+                                        className="w-10 text-center text-sm font-medium text-espresso bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                      />
+                                      <Button
+                                        type="button"
+                                        onClick={() => {
+                                          const currencyQty = Number(producto.cantidad) || 0;
+                                          updateQuantity(
+                                            producto.id,
+                                            producto.talla,
+                                            producto.color,
+                                            currencyQty + 1,
+                                          );
+                                        }}
+                                        className="px-2.5 py-1 text-espresso/70 hover:bg-espresso/5 transition-colors text-body-sm font-medium"
+                                        aria-label="Aumentar cantidad"
+                                      >
+                                        +
+                                      </Button>
+                                    </div>
+                                  </div>
+                                  <div className="flex">
                                     <Button
                                       type="button"
-                                      onClick={() => {
-                                        const currencyQty = Number(producto.quantity) || 1;
-                                        if (currencyQty > 1) {
-                                          actualizarCantidad(producto.id, currencyQty - 1);
-                                        }
-                                      }}
-                                      className="px-2.5 py-1 text-espresso/70 hover:bg-espresso/5 transition-colors text-body-sm font-medium"
-                                      aria-label="Disminuir cantidad"
+                                      onClick={() =>
+                                        removeItem(producto.id, producto.talla, producto.color)
+                                      }
+                                      className="font-medium text-terracota hover:text-terracota/80 cursor-pointer"
                                     >
-                                      {" "}
-                                      -{" "}
-                                    </Button>
-                                    <Input
-                                      type="number"
-                                      min="1"
-                                      value={producto.quantity}
-                                      onChange={(e) => {
-                                        const val = parseInt(e.target.value);
-                                        const newQty = isNaN(val) ? 1 : Math.max(1, val);
-                                        actualizarCantidad(producto.id, newQty);
-                                      }}
-                                      className="w-10 text-center text-sm font-medium text-espresso bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                    />
-                                    <Button
-                                      type="button"
-                                      onClick={() => {
-                                        const currencyQty = Number(producto.quantity) || 0;
-                                        actualizarCantidad(producto.id, currencyQty + 1);
-                                      }}
-                                      className="px-2.5 py-1 text-espresso/70 hover:bg-espresso/5 transition-colors text-body-sm font-medium"
-                                      aria-label="Aumentar cantidad"
-                                    >
-                                      {" "}
-                                      +{" "}
+                                      Eliminar
                                     </Button>
                                   </div>
                                 </div>
-                                <div className="flex">
-                                  <Button
-                                    as="button"
-                                    className="font-medium text-terracota hover:text-terracota/80"
-                                  >
-                                    Eliminar
-                                  </Button>
-                                </div>
                               </div>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
                   </div>
                 </div>
-                <div className="flex flex-col mt-4 space-y-3  border-t border-espresso/10 pt-4">
+
+                <div className="flex flex-col mt-4 space-y-3 border-t border-espresso/10 pt-4">
                   <div className="flex items-center justify-between text-espresso">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-heading-md">Costo de envío</span>
@@ -187,7 +219,6 @@ export default function Chechoutpage() {
                         >
                           ?
                         </PopoverButton>
-
                         <PopoverPanel className="absolute left-0 bottom-full mb-2 z-10 w-64 p-3 text-xs text-espresso bg-white rounded-lg shadow-xl border border-espresso/10">
                           El costo de envío exacto se calcula y se acuerda directamente por WhatsApp
                           según tu ciudad y dirección.
@@ -208,7 +239,9 @@ export default function Chechoutpage() {
                 </div>
               </div>
             </section>
-            <section className="flex flex-col w-full  gap-4 p-6 mb-2 rounded-md">
+
+            {/* FORMULARIO DE DATOS */}
+            <section className="flex flex-col w-full gap-4 p-6 mb-2 rounded-md">
               <div className="flex flex-col gap-2 pb-4 font-sans border-b border-espresso/10">
                 <h2 className="font-bold text-espresso text-heading-md tracking-tight">
                   Tus datos
@@ -225,8 +258,7 @@ export default function Chechoutpage() {
                     </Legend>
                     <Field>
                       <Label className="flex text-espresso/80 text-body-md font-medium">
-                        Nombre completo{""}
-                        <p className="text-red-500">*</p>
+                        Nombre completo <p className="text-red-500">*</p>
                       </Label>
                       <Input
                         name="nombre"
@@ -248,8 +280,7 @@ export default function Chechoutpage() {
                     </Field>
                     <Field>
                       <Label className="flex text-espresso/80 text-body-md font-medium">
-                        Celular{""}
-                        <p className="text-red-500">*</p>
+                        Celular <p className="text-red-500">*</p>
                       </Label>
                       <Input
                         name="celular"
@@ -271,8 +302,7 @@ export default function Chechoutpage() {
                     </Field>
                     <Field>
                       <Label className="flex text-espresso/80 text-body-md font-medium">
-                        Ciudad{""}
-                        <p className="text-red-500">*</p>
+                        Ciudad <p className="text-red-500">*</p>
                       </Label>
                       <Input
                         name="ciudad"
@@ -294,8 +324,7 @@ export default function Chechoutpage() {
                     </Field>
                     <Field>
                       <Label className="flex text-espresso/80 text-body-md font-medium">
-                        Dirección{""}
-                        <p className="text-red-500">*</p>
+                        Dirección <p className="text-red-500">*</p>
                       </Label>
                       <Input
                         name="direccion"
@@ -322,10 +351,7 @@ export default function Chechoutpage() {
                         placeholder="Las Palmas"
                         value={formData.barrio}
                         onChange={handleChange}
-                        className={clsx(
-                          "mt-3 block w-full rounded-md border-b border-gray-400 shadow-md px-3 py-2 text-body-sm text-espresso",
-                          "focus:not-data-focus:outline-gray-400 data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-gold-light/50",
-                        )}
+                        className="mt-3 block w-full rounded-md border-b border-gray-400 shadow-md px-3 py-2 text-body-sm text-espresso focus:not-data-focus:outline-gray-400 data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-gold-light/50"
                       />
                     </Field>
                     <Field>
@@ -342,10 +368,7 @@ export default function Chechoutpage() {
                           value={formData.metodo}
                           onChange={handleChange}
                           aria-label="Elige el método de pago"
-                          className={clsx(
-                            "mt-3 block w-full rounded-md border-b border-gray-400 shadow-md px-3 py-2 text-body-sm text-espresso",
-                            "focus:not-data-focus:outline-gray-400 data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-gold-light/50",
-                          )}
+                          className="mt-3 block w-full rounded-md border-b border-gray-400 shadow-md px-3 py-2 text-body-sm text-espresso focus:not-data-focus:outline-gray-400 data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-gold-light/50"
                         >
                           <option value="transferencia">Transferencia</option>
                           <option value="efectivo">Efectivo</option>
@@ -364,10 +387,7 @@ export default function Chechoutpage() {
                         placeholder="Ej: Puede dejarlo en recepción"
                         value={formData.nota}
                         onChange={handleChange}
-                        className={clsx(
-                          "mt-3 block w-full resize-none rounded-md border-b border-gray-400 shadow-md px-3 py-2 text-body-sm text-espresso",
-                          "focus:not-data-focus:outline-gray-400 data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-gold-light/50",
-                        )}
+                        className="mt-3 block w-full resize-none rounded-md border-b border-gray-400 shadow-md px-3 py-2 text-body-sm text-espresso focus:not-data-focus:outline-gray-400 data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-gold-light/50"
                         rows={3}
                       />
                     </Field>
@@ -375,8 +395,15 @@ export default function Chechoutpage() {
                   <div className="flex flex-col p-4 gap-4 mt-2">
                     <Button
                       type="submit"
-                      className="flex items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 text-body-md font-medium text-white data-hover:bg-green-700"
+                      disabled={items.length === 0}
+                      className={clsx(
+                        "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-body-md font-medium text-white transition-colors",
+                        items.length === 0
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-green-600 data-hover:bg-green-700 cursor-pointer",
+                      )}
                     >
+                      {/* Icono de WhatsApp */}
                       <svg
                         className="w-4 h-4 fill-current"
                         xmlns="http://www.w3.org/2000/svg"
@@ -388,7 +415,7 @@ export default function Chechoutpage() {
                     </Button>
                     <Button
                       type="button"
-                      className="rounded-md px-4 py-2 text-body-md font-medium text-espresso data-hover:bg-gray-100"
+                      className="rounded-md px-4 py-2 text-body-md font-medium text-espresso data-hover:bg-gray-100 cursor-pointer"
                     >
                       Cancelar
                     </Button>

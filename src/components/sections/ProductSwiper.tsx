@@ -33,7 +33,7 @@ export default function ProductSwiper({ images, productoName }: ProductSwiperPro
           {imageList.map((imgUrl, index) => (
             <SwiperSlide key={index} className="relative h-full w-full bg-gray-100">
               <Image
-                src={imgUrl}
+                src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${imgUrl}`}
                 alt={`${productoName} - Vista ${index + 1}`}
                 fill
                 sizes="100vw"
@@ -55,11 +55,11 @@ export default function ProductSwiper({ images, productoName }: ProductSwiperPro
           className="col-span-2 relative aspect-4/3 xl:aspect-9/16 
           w-full rounded-xl overflow-hidden bg-gray-100 shadow-md cursor-pointer group"
           onClick={() => {
-            setSelectedImage(imageList[0]);
+            setSelectedImage(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${imageList[0]}`);
           }}
         >
           <Image
-            src={imageList[0]}
+            src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${imageList[0]}`}
             alt={`${productoName} - Principal`}
             fill
             sizes="(max-width: 1200px) 50vw, 40vw"
@@ -73,14 +73,14 @@ export default function ProductSwiper({ images, productoName }: ProductSwiperPro
           <div
             key={index}
             onClick={() => {
-              setSelectedImage(img);
+              setSelectedImage(`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${img}`);
               setIsOpenModal(true);
             }}
             className="relative aspect-square w-full rounded-lg overflow-hidden bg-gray-100 shadow-sm cursor-pointer group"
           >
             <Image
               alt={`${productoName} - Vista ${index + 2}`}
-              src={img}
+              src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${img}`}
               fill
               sizes="25vw"
               className="object-cover object-center transition-transform duration-300 group-hover:scale-105"

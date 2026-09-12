@@ -1,28 +1,16 @@
+// @/components/sections/CategoryFilters.tsx
 "use client";
 
 import { useSearchParams } from "next/navigation";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { FilterItem } from "@/utils/filters";
 import Link from "next/link";
 
-const SORT_OPTIONS = [
-  { label: "Destacados", value: "destacados" },
-  { label: "Novedades", value: "novedades" },
-  { label: "Menor Precio", value: "precio-asc" },
-  { label: "Mayor Precio", value: "precio-desc" },
-  {
-    label: "Color",
-    children: [
-      { label: "Todos los colores", value: "" },
-      { label: "Verde", value: "verde" },
-      { label: "Azul", value: "azul" },
-      { label: "Negro", value: "negro" },
-      { label: "Gris", value: "gris" },
-      { label: "Blanco", value: "blanco" },
-    ],
-  },
-];
+interface CategoryFiltersProps {
+  filters: FilterItem[];
+}
 
-export default function CategoryFilters() {
+export default function CategoryFilters({ filters = [] }: CategoryFiltersProps) {
   const searchParams = useSearchParams();
 
   // Default: Destacados
@@ -47,15 +35,13 @@ export default function CategoryFilters() {
       </p>
 
       <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-        {SORT_OPTIONS.map((option, index) => {
+        {filters.map((option, index) => {
           if (option.children) {
             const isAnyChildSelected = option.children.some(
-              (child) => child.value && currentColor === child.value,
+              (child) => child.slug && currentColor === child.slug,
             );
 
-            const activeColorLabel = option.children.find(
-              (c) => c.value === currentColor,
-            )?.label;
+            const activeColorLabel = option.children.find((c) => c.slug === currentColor)?.nombre;
 
             return (
               <Menu
@@ -82,12 +68,11 @@ export default function CategoryFilters() {
                 >
                   {option.children.map((child) => {
                     const isSelected =
-                      currentColor === child.value ||
-                      (!currentColor && child.value === "");
+                      currentColor === child.slug || (!currentColor && child.slug === "");
                     return (
-                      <MenuItem key={child.value || "all"}>
+                      <MenuItem key={child.slug || "all"}>
                         <Link
-                          href={`?${createQueryString("color", child.value)}`}
+                          href={`?${createQueryString("color", child.slug)}`}
                           scroll={false}
                           className={`flex px-4 py-2 text-label font-sans uppercase tracking-wider rounded-md tansition-colors ${
                             isSelected
@@ -95,7 +80,7 @@ export default function CategoryFilters() {
                               : "text-espresso/70 hover:bg-espresso/5"
                           }`}
                         >
-                          {child.label}
+                          {child.nombre}
                         </Link>
                       </MenuItem>
                     );
