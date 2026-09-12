@@ -10,17 +10,18 @@ export async function getAllProducts(): Promise<Producto[]> {
     const productos = await query<Producto>(
       `SELECT
       p.id, p.categoria_id, p.nombre, p.slug, p.descripcion, p.detalles, p.precio, 
-      p.descuento, p.stock, p.imagenes, p.dimensiones, p.destacado,
+      p.descuento, p.stock, p.imagenes, p.dimensiones, p.destacado, p.creado_en,
       cat.slug AS categoria_slug,
       COALESCE(
         json_agg(DISTINCT jsonb_build_object('nombre', c.nombre, 'slug', c.slug, 'hex', c.hex))
         FILTER (WHERE c.id IS NOT NULL), '[]'
       ) AS colores, 
       COALESCE( 
-        array_agg(DISTINCT t.nombre)
-        FILTER (WHERE t.id IS NOT NULL), '{}'
-      ) AS tallas 
+        json_agg(DISTINCT jsonb_build_object('nombre', t.nombre, 'orden', t.orden))
+        FILTER (WHERE t.id IS NOT NULL), '[]'
+      ) AS tallas
       FROM productos p 
+      INNER JOIN categorias cat ON p.categoria_id = cat.id
       LEFT JOIN producto_colores pc ON p.id = pc.producto_id
       LEFT JOIN colores c ON pc.color_id = c.id 
       LEFT JOIN producto_tallas pt ON p.id = pt.producto_id
@@ -50,9 +51,9 @@ export async function getProductsBySlug(slug: string): Promise<Producto[]> {
         FILTER (WHERE c.id IS NOT NULL), '[]'
       ) AS colores, 
       COALESCE( 
-        array_agg(DISTINCT t.nombre)
-        FILTER (WHERE t.id IS NOT NULL), '{}'
-      ) AS tallas 
+        json_agg(DISTINCT jsonb_build_object(t.nombre, t.orden))
+        FILTER (WHERE t.id IS NOT NULL), '[]'
+      ) AS tallas
       FROM productos p 
       INNER JOIN categorias cat ON p.categoria_id = cat.id
       LEFT JOIN producto_colores pc ON p.id = pc.producto_id

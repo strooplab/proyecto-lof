@@ -39,11 +39,11 @@ export const useCarrito = create<CartState>()(
       },
 
       // Aumentar cantidad del producto a pedir
-      updateCantidad: (id, cantidad, talla, color) => {
+      updateCantidad: (id, talla, color, cantidad) => {
         set((state) => ({
           items: state.items.map((item) =>
             item.id === id && item.talla === talla && item.color === color
-              ? { ...item, cantidad: Math.max(1, cantidad) }
+              ? { ...item, cantidad: Math.max(1, cantidad || 0) }
               : item,
           ),
         }));

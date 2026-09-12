@@ -8,6 +8,8 @@ import { ContextProvider } from "@/components/context/PanelContext"; // Shared C
 import Footer from "@/components/ui/Footer"; // UI Footer
 import FloatingWhatsApp from "@/components/ui/FloatingWhatsapp"; // UI Whatsapp block
 import { getNavigation } from "@/data/navigation"; // Hybrid Navigation
+import { Suspense } from "react";
+import { Skeleton } from "@/components/skeletons/StoreSkeleton";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const Navigation = await getNavigation();
@@ -15,8 +17,12 @@ export default async function PublicLayout({ children }: { children: React.React
   return (
     <ContextProvider>
       <div className="relative min-h-screen flex flex-col bg-cream">
-        <Navbar navigation={Navigation} />
-        <Menubar navigation={Navigation} />
+        <Suspense fallback={<Skeleton className="w-full h-24" />}>
+          <Navbar navigation={Navigation} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Menubar navigation={Navigation} />
+        </Suspense>
         <Carrito />
         <Buscar />
         <main className="grow">{children}</main>

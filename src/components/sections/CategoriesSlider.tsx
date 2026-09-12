@@ -1,3 +1,4 @@
+// @/components/sections/CategoriesSlider.tsx
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -5,21 +6,18 @@ import { FreeMode, Mousewheel } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-interface CategoryItem {
-  name: string;
-  href: string;
-}
+import { usePathname, useSearchParams } from "next/navigation";
+import Categoria from "@/types/category";
 
 interface CategoriesSliderProps {
-  categorias: CategoryItem[];
+  categorias: Categoria[];
 }
 
-export default function CategoriesSlider({
-  categorias,
-}: CategoriesSliderProps) {
+export default function CategoriesSlider({ categorias }: CategoriesSliderProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const searchString = searchParams.toString();
+  const queryString = searchString ? `?${searchString}` : "";
 
   return (
     <div className="w-full lg:py-4 overflow-hidden">
@@ -39,11 +37,14 @@ export default function CategoriesSlider({
           className="w-full pb-3 pr-4 cursor-grab active:cursor-grabbing"
         >
           {categorias.map((cat) => {
-            const isActive = pathname === cat.href;
+            const formatURLCat = `/${cat.slug}`;
+            // Para conservar los filtros incluso habiendo cambiado de categoria
+            const conserveFiltersURL = `${formatURLCat}${queryString}`;
+            const isActive = pathname === formatURLCat;
             return (
-              <SwiperSlide key={cat.href} className="w-auto!">
+              <SwiperSlide key={cat.slug} className="w-auto!">
                 <Link
-                  href={cat.href}
+                  href={conserveFiltersURL}
                   scroll={false}
                   className={`inline-flex items-center justify-center px-6 py-3 rounded-full text-label md:text-sm font-sans uppercase tracking-wider transition-all duration-200 ${
                     isActive
@@ -51,7 +52,7 @@ export default function CategoriesSlider({
                       : "bg-espresso/5 text-espresso hover:bg-espresso/10"
                   }`}
                 >
-                  {cat.name}
+                  {cat.nombre}
                 </Link>
               </SwiperSlide>
             );

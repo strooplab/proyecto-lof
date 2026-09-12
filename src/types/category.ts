@@ -9,4 +9,5 @@ export default interface Categoria {
   slug: string;
   descripcion: string | null;
   orden: number;
+  items?: number;
 }

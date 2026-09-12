@@ -30,4 +30,5 @@ export interface Producto {
   tallas: TallaItem[];
   destacado: boolean;
   orden: number;
+  creado_en: string;
 }

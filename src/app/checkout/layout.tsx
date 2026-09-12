@@ -1,3 +1,4 @@
+// @/src/app/checkout/layout.tsx
 import { ContextProvider } from "@/components/context/PanelContext";
 
 export default function Checkoutlayout({ children }: { children: React.ReactNode }) {
